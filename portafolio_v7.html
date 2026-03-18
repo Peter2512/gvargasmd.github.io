@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Madriguera de Datos — Soluciones que Transforman Organizaciones</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0D0E14;
+  --s1:#13141C;
+  --s2:#1C1E2A;
+  --s3:#252838;
+  --p:#7C3AED;
+  --pb:#A78BFA;
+  --pd:rgba(124,58,237,0.15);
+  --pd2:rgba(124,58,237,0.07);
+  --c:#06B6D4;
+  --cd:rgba(6,182,212,0.1);
+  --g:#10B981;
+  --gd:rgba(16,185,129,0.1);
+  --r:#F43F5E;
+  --rd:rgba(244,63,94,0.1);
+  --a:#F59E0B;
+  --ad:rgba(245,158,11,0.1);
+  --t1:#E8EAF0;
+  --t2:#9CA3AF;
+  --t3:#6B7280;
+  --border:rgba(124,58,237,0.12);
+  --border2:rgba(124,58,237,0.35);
+}
+html{scroll-behavior:smooth}
+body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--t1);overflow-x:hidden;line-height:1.6}
+
+/* ── ANIMATIONS ── */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-12px)}}
+@keyframes blink{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.25;transform:scale(.6)}}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+@keyframes pulse-ring{0%{transform:scale(0.8);opacity:.8}100%{transform:scale(2.2);opacity:0}}
+
+/* ── GRID BG ── */
+.grid-bg{position:absolute;inset:0;background-image:linear-gradient(rgba(124,58,237,.035) 1px,transparent 1px),linear-gradient(90deg,rgba(124,58,237,.035) 1px,transparent 1px);background-size:52px 52px;pointer-events:none}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:300;
+  background:rgba(13,14,20,.85);backdrop-filter:blur(24px);
+  padding:0 3rem;display:flex;align-items:center;justify-content:space-between;
+  height:64px;border-bottom:1px solid var(--border);
+  animation:fadeUp .5s ease both;
+}
+.logo{display:flex;align-items:center;gap:10px;text-decoration:none}
+.logo-icon{width:36px;height:36px;flex-shrink:0}
+.logo-text{display:flex;flex-direction:column;line-height:1.1}
+.logo-name{font-size:15px;font-weight:800;color:var(--pb);letter-spacing:-.01em}
+.logo-tag{font-family:'JetBrains Mono',monospace;font-size:8.5px;color:var(--t3);letter-spacing:.15em;text-transform:uppercase;margin-top:1px}
+.nav-links{display:flex;gap:2.5rem;list-style:none}
+.nav-links a{font-size:12.5px;font-weight:500;color:var(--t3);text-decoration:none;letter-spacing:.04em;transition:color .2s}
+.nav-links a:hover{color:var(--pb)}
+.nav-btn{background:var(--p);color:#fff;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;padding:10px 22px;border-radius:8px;text-decoration:none;transition:all .2s;border:1px solid transparent}
+.nav-btn:hover{background:transparent;border-color:var(--p);color:var(--pb)}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;display:flex;align-items:center;
+  padding:7rem 3rem 5rem;position:relative;overflow:hidden;
+}
+.hero-orb1{position:absolute;width:700px;height:700px;border-radius:50%;top:-200px;right:-200px;background:radial-gradient(circle,rgba(124,58,237,.2) 0%,transparent 65%);pointer-events:none;animation:float 8s ease-in-out infinite}
+.hero-orb2{position:absolute;width:500px;height:500px;border-radius:50%;bottom:-200px;left:-100px;background:radial-gradient(circle,rgba(6,182,212,.1) 0%,transparent 65%);pointer-events:none;animation:float 10s ease-in-out infinite reverse}
+.hero-inner{max-width:1140px;margin:0 auto;width:100%;display:grid;grid-template-columns:1fr 440px;gap:5rem;align-items:center;position:relative;z-index:1}
+
+.hero-kicker{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--pd);border:1px solid var(--border2);
+  padding:6px 16px;border-radius:100px;margin-bottom:2rem;
+}
+.kicker-dot{width:7px;height:7px;border-radius:50%;background:var(--pb);position:relative}
+.kicker-dot::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1px solid var(--pb);animation:pulse-ring 1.5s ease-out infinite}
+.kicker-text{font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500;color:var(--pb);letter-spacing:.1em}
+
+.hero-h1{font-size:clamp(3rem,6vw,5.2rem);font-weight:900;line-height:1.0;letter-spacing:-.03em;margin-bottom:2rem;color:var(--t1)}
+.hero-h1 em{font-style:normal;background:linear-gradient(135deg,var(--pb) 0%,var(--c) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.hero-h1 .ghost{color:rgba(232,234,240,.15)}
+
+.hero-sub{font-size:17px;font-weight:300;color:var(--t2);line-height:1.85;max-width:520px;margin-bottom:2.5rem}
+.hero-sub strong{font-weight:600;color:var(--t1)}
+
+.hero-value-props{display:flex;flex-direction:column;gap:12px;margin-bottom:3rem}
+.vp{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--t2)}
+.vp-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.vp-text strong{color:var(--t1);font-weight:600}
+
+.hero-ctas{display:flex;gap:1rem;align-items:center;flex-wrap:wrap}
+.cta-primary{background:linear-gradient(135deg,var(--p),#5b21b6);color:#fff;font-size:15px;font-weight:700;padding:15px 36px;border-radius:10px;text-decoration:none;transition:all .2s;box-shadow:0 8px 32px rgba(124,58,237,.35)}
+.cta-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(124,58,237,.45)}
+.cta-secondary{color:var(--t2);font-size:15px;font-weight:500;padding:15px 28px;border-radius:10px;text-decoration:none;border:1px solid var(--border2);transition:all .2s}
+.cta-secondary:hover{border-color:var(--pb);color:var(--pb)}
+
+/* hero right — results showcase */
+.hero-results{display:flex;flex-direction:column;gap:12px}
+.result-card{background:var(--s1);border:1px solid var(--border);border-radius:14px;padding:1.4rem;transition:border-color .2s}
+.result-card:hover{border-color:var(--border2)}
+.rc-label{font-family:'JetBrains Mono',monospace;font-size:9px;font-weight:500;letter-spacing:.15em;text-transform:uppercase;color:var(--t3);margin-bottom:.6rem}
+.rc-value{font-size:2rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--pb),var(--c));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.rc-desc{font-size:12px;color:var(--t3);margin-top:5px;line-height:1.5}
+.rc-highlight{font-weight:600;color:var(--g)}
+.rc-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.rc-sm{background:var(--s2);border:1px solid var(--border);border-radius:12px;padding:1rem 1.2rem}
+.rc-sm-val{font-size:1.5rem;font-weight:700;color:var(--pb)}
+.rc-sm-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.06em;margin-top:2px}
+.impact-bar{margin-top:10px}
+.ib-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
+.ib-label{font-size:11px;color:var(--t3);width:90px;flex-shrink:0}
+.ib-track{flex:1;height:4px;background:var(--s3);border-radius:2px}
+.ib-fill{height:100%;border-radius:2px}
+.ib-val{font-size:11px;font-weight:600;width:36px;text-align:right}
+
+/* ── DIVIDER ── */
+.divider{height:1px;background:linear-gradient(90deg,transparent,var(--p),var(--c),transparent);opacity:.3}
+
+/* ── MANIFESTO ── */
+.manifesto{background:var(--s1);padding:5rem 3rem;text-align:center}
+.manifesto-inner{max-width:860px;margin:0 auto}
+.manifesto blockquote{font-size:clamp(1.4rem,2.8vw,2.2rem);font-weight:700;line-height:1.4;color:var(--t1);letter-spacing:-.02em;margin-bottom:1.5rem}
+.manifesto blockquote em{font-style:normal;background:linear-gradient(135deg,var(--pb),var(--c));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.manifesto p{font-size:16px;color:var(--t2);max-width:620px;margin:0 auto;font-weight:300;line-height:1.85}
+.manifesto-chips{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;margin-top:2rem}
+.mchip{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--pb);background:var(--pd);border:1px solid rgba(167,139,250,.15);padding:5px 14px;border-radius:100px}
+
+/* ── SECTION BASE ── */
+.sec{padding:6.5rem 3rem}
+.sec-inner{max-width:1140px;margin:0 auto}
+.eyebrow{display:inline-flex;align-items:center;gap:7px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;margin-bottom:1rem}
+.ey-p{color:var(--pb)}.ey-c{color:var(--c)}.ey-g{color:var(--g)}.ey-r{color:var(--r)}.ey-a{color:var(--a)}
+.eyebrow span{opacity:.4;margin-right:4px}
+.sec-title{font-size:clamp(2rem,3.5vw,3rem);font-weight:800;line-height:1.08;margin-bottom:1.2rem;letter-spacing:-.025em}
+.sec-title em{font-style:normal;background:linear-gradient(135deg,var(--pb),var(--c));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.sec-desc{font-size:16px;color:var(--t2);line-height:1.85;max-width:560px;font-weight:300}
+.sec-head{display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:1.5rem;margin-bottom:4.5rem}
+
+/* ── SERVICIOS — NUEVO ENFOQUE ── */
+#servicios{background:var(--bg)}
+.srv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem}
+.srv-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:18px;
+  padding:2.5rem;position:relative;overflow:hidden;transition:all .3s;
+}
+.srv-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1.5px;
+  background:var(--gradient,linear-gradient(90deg,var(--p),var(--c)));
+}
+.srv-card:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(124,58,237,.12)}
+.srv-card.feat{grid-column:span 2;display:grid;grid-template-columns:1fr 1fr;gap:2rem;align-items:start}
+.srv-num{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:1.5rem}
+.srv-icon-wrap{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:24px;margin-bottom:1.25rem}
+.srv-title{font-size:1.15rem;font-weight:700;color:var(--t1);margin-bottom:.75rem;line-height:1.3}
+.srv-desc{font-size:13.5px;color:var(--t3);line-height:1.75;margin-bottom:1.25rem}
+.srv-outcomes{display:flex;flex-direction:column;gap:6px}
+.srv-outcome{display:flex;align-items:center;gap:8px;font-size:12.5px;color:var(--t2)}
+.srv-outcome::before{content:'→';color:var(--pb);font-weight:600;font-size:13px;flex-shrink:0}
+.srv-tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:1.25rem}
+.srv-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);border:1px solid var(--border);padding:3px 9px;border-radius:6px;background:var(--s2)}
+
+/* ── VALOR / COMO FUNCIONA ── */
+#valor{background:var(--s1)}
+.value-grid{display:grid;grid-template-columns:1fr 1fr 1fr;gap:1.5rem;margin-top:1rem}
+.vcard{background:var(--s2);border:1px solid var(--border);border-radius:16px;padding:2rem;transition:all .25s}
+.vcard:hover{border-color:var(--border2);box-shadow:0 0 40px rgba(124,58,237,.1)}
+.vcard-step{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);letter-spacing:.2em;margin-bottom:1.2rem}
+.vcard-icon{font-size:2.2rem;margin-bottom:1rem}
+.vcard-title{font-size:1.1rem;font-weight:700;color:var(--t1);margin-bottom:.6rem}
+.vcard-desc{font-size:13px;color:var(--t3);line-height:1.75}
+.vcard-result{
+  margin-top:1.25rem;padding:10px 14px;
+  background:var(--pd2);border:1px solid rgba(167,139,250,.1);border-radius:10px;
+  font-size:12px;color:var(--pb);font-weight:500;
+}
+.vcard-result::before{content:'↳ ';opacity:.6}
+
+/* ── SECTORES ── */
+#sectores{background:var(--bg)}
+.sectors-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:1rem}
+.sec-card{
+  background:var(--s1);border:1px solid var(--border);border-radius:14px;
+  padding:1.75rem 1.25rem;text-align:center;transition:all .25s;
+}
+.sec-card:hover{border-color:var(--border2);transform:translateY(-3px);box-shadow:0 12px 40px rgba(124,58,237,.1)}
+.sec-emoji{font-size:2.2rem;margin-bottom:.75rem}
+.sec-name{font-size:.9rem;font-weight:700;color:var(--t1);margin-bottom:.4rem}
+.sec-hint{font-size:11.5px;color:var(--t3);line-height:1.55}
+
+/* ── PROYECTOS ── */
+#proyectos{background:var(--s1)}
+.proj-grid{display:grid;grid-template-columns:1fr 1fr;gap:1.5rem}
+.pcard{background:var(--s2);border:1px solid var(--border);border-radius:18px;padding:2.5rem;transition:all .3s;overflow:hidden;position:relative}
+.pcard:hover{border-color:var(--border2);transform:translateY(-4px);box-shadow:0 20px 60px rgba(124,58,237,.1)}
+.pcard.star{grid-column:span 2;display:grid;grid-template-columns:1.3fr 1fr;gap:3rem;align-items:center}
+.pcard-stripe{height:1.5px;margin-bottom:2rem;border-radius:2px}
+.ptag{display:inline-flex;align-items:center;gap:5px;font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;border-radius:6px;margin-bottom:1.25rem}
+.pcard-title{font-size:1.2rem;font-weight:800;color:var(--t1);margin-bottom:.75rem;line-height:1.25;letter-spacing:-.01em}
+.pcard-desc{font-size:13.5px;color:var(--t2);line-height:1.8;margin-bottom:1.5rem}
+.pcard-impact{margin-bottom:1.25rem}
+.pcard-impact-title{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.15em;text-transform:uppercase;margin-bottom:8px}
+.pcard-impact-items{display:flex;flex-direction:column;gap:5px}
+.pi{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--t2)}
+.pi-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0}
+.pills{display:flex;flex-wrap:wrap;gap:5px}
+.pl{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);border:1px solid var(--border);padding:3px 8px;border-radius:5px;background:var(--s1)}
+.pm-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+.pm{background:var(--s1);border:1px solid var(--border);border-radius:12px;padding:1.25rem;text-align:center}
+.pm-val{font-size:2rem;font-weight:800;line-height:1;background:linear-gradient(135deg,var(--pb),var(--c));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.pm-label{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t3);letter-spacing:.08em;margin-top:5px}
+
+/* ── TABLEROS ── */
+#tableros{background:var(--bg)}
+.tab-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.25rem}
+.tcard{background:var(--s1);border:1px solid var(--border);border-radius:16px;overflow:hidden;transition:all .25s}
+.tcard:hover{border-color:var(--border2);box-shadow:0 16px 48px rgba(124,58,237,.14);transform:translateY(-4px)}
+.tcard-visual{height:130px;display:flex;align-items:center;justify-content:center;font-size:3rem;position:relative;overflow:hidden}
+.tcard-visual::after{content:'';position:absolute;inset:0;background:rgba(13,14,20,.25)}
+.tcard-body{padding:1.5rem}
+.tcard-cat{font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:6px;margin-bottom:.8rem;display:inline-block}
+.tcard-title{font-size:.95rem;font-weight:700;color:var(--t1);margin-bottom:.5rem;line-height:1.3}
+.tcard-desc{font-size:12px;color:var(--t3);line-height:1.65;margin-bottom:1rem}
+.tcard-datasets{margin-top:.75rem}
+.ds-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.1em;margin-bottom:5px}
+.ds-chips{display:flex;flex-wrap:wrap;gap:4px}
+.ds-chip{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--pb);background:var(--pd);border:1px solid rgba(167,139,250,.18);padding:2px 7px;border-radius:4px}
+.tcard-foot{display:flex;justify-content:space-between;align-items:center;padding:.9rem 1.5rem;border-top:1px solid var(--border)}
+.tcard-kpi{font-family:'JetBrains Mono',monospace;font-size:9.5px;color:var(--t3)}
+.tcard-rows{font-family:'JetBrains Mono',monospace;font-size:9.5px;font-weight:600;color:var(--g)}
+.tcard-plus{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:320px;background:var(--pd2);border:1.5px dashed rgba(124,58,237,.25);border-radius:16px}
+
+/* ── TOOLKIT ── */
+#toolkit{background:var(--s1)}
+.tk-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem}
+.tkcard{background:var(--s2);border:1px solid var(--border);border-radius:14px;padding:1.5rem;text-align:center;transition:all .2s}
+.tkcard:hover{border-color:var(--border2);transform:translateY(-2px)}
+.tk-ico{width:46px;height:46px;border-radius:12px;margin:0 auto 1rem;display:flex;align-items:center;justify-content:center;font-size:22px;background:var(--pd);border:1px solid var(--border)}
+.tk-name{font-size:13.5px;font-weight:600;color:var(--t1);margin-bottom:2px}
+.tk-cat{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3)}
+.tk-bar{height:2px;border-radius:2px;margin-top:1rem;background:var(--s3)}
+.tk-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--p),var(--c))}
+
+/* ── CTA ── */
+#contacto{
+  background:var(--bg);
+  padding:9rem 3rem;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta-orb{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,58,237,.12) 0%,transparent 65%);
+  pointer-events:none;
+}
+.cta-inner{position:relative;max-width:820px;margin:0 auto}
+.cta-title{font-size:clamp(2.5rem,5vw,4.2rem);font-weight:900;line-height:1.05;letter-spacing:-.03em;margin:.75rem auto 1.5rem;color:var(--t1)}
+.cta-title em{font-style:normal;background:linear-gradient(135deg,var(--pb),var(--c));-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+.cta-sub{font-size:17px;color:var(--t3);max-width:500px;margin:0 auto 4rem;line-height:1.85;font-weight:300}
+.cta-links{display:flex;gap:1rem;justify-content:center;flex-wrap:wrap}
+.cl{display:flex;align-items:center;gap:9px;background:var(--s1);border:1px solid var(--border);color:var(--t2);padding:14px 28px;border-radius:10px;font-size:14px;text-decoration:none;transition:all .2s;font-weight:500}
+.cl:hover{border-color:var(--border2);color:var(--pb)}
+.cl.prime{background:linear-gradient(135deg,var(--p),#5b21b6);color:#fff;border-color:transparent;font-weight:700;box-shadow:0 8px 32px rgba(124,58,237,.35)}
+.cl.prime:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(124,58,237,.45)}
+
+footer{
+  background:var(--s1);border-top:1px solid var(--border);
+  padding:2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem;
+}
+.footer-brand{display:flex;align-items:center;gap:8px}
+footer p{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--t3)}
+
+@media(max-width:900px){
+  nav{padding:0 1.5rem}.nav-links{display:none}
+  .hero{padding:6rem 1.5rem 4rem}.hero-inner{grid-template-columns:1fr}.hero-results{display:none}
+  .sec{padding:4.5rem 1.5rem}
+  .srv-grid{grid-template-columns:1fr}.srv-card.feat{grid-column:span 1;grid-template-columns:1fr}
+  .value-grid,.sectors-grid{grid-template-columns:repeat(2,1fr)}
+  .proj-grid,.tab-grid{grid-template-columns:1fr}.pcard.star{grid-column:span 1;grid-template-columns:1fr}
+  .tk-grid{grid-template-columns:repeat(2,1fr)}
+  footer{flex-direction:column;text-align:center}
+}
+
+.tcard-btn{
+  display:flex;align-items:center;gap:8px;
+  margin:1rem 1.5rem 0;padding:.7rem 1.1rem;
+  background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(6,182,212,.08));
+  border:1px solid rgba(124,58,237,.35);border-radius:10px;
+  color:var(--pb);font-size:12px;font-weight:600;
+  text-decoration:none;cursor:pointer;
+  transition:all .22s;letter-spacing:.02em;
+  position:relative;overflow:hidden;
+}
+.tcard-btn::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(124,58,237,.25),rgba(6,182,212,.15));
+  opacity:0;transition:opacity .22s;
+}
+.tcard-btn:hover{border-color:rgba(124,58,237,.7);transform:translateY(-1px);box-shadow:0 4px 20px rgba(124,58,237,.25);color:#fff}
+.tcard-btn:hover::before{opacity:1}
+.tcard-btn svg{flex-shrink:0;position:relative;z-index:1}
+.tcard-btn span{position:relative;z-index:1}
+.tcard-btn .btn-arrow{margin-left:auto;font-size:14px;transition:transform .22s;position:relative;z-index:1}
+.tcard-btn:hover .btn-arrow{transform:translateX(3px)}
+
+.tcard-wip{
+  display:flex;align-items:center;gap:8px;
+  margin:1rem 1.5rem 0;padding:.7rem 1.1rem;
+  background:rgba(107,114,128,.06);
+  border:1px dashed rgba(107,114,128,.2);border-radius:10px;
+  color:var(--t3);font-size:11px;font-weight:500;
+  cursor:default;letter-spacing:.02em;
+}
+.wip-dot{width:6px;height:6px;border-radius:50%;background:var(--a);animation:blink 1.8s ease-in-out infinite;flex-shrink:0}
+.wip-text{color:var(--t3)}
+.wip-eta{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);opacity:.6}
+
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <a class="logo" href="#">
+    <svg class="logo-icon" viewBox="0 0 36 36" fill="none">
+      <circle cx="18" cy="18" r="17" fill="#13141C" stroke="rgba(167,139,250,0.35)" stroke-width="1"/>
+      <circle cx="18" cy="18" r="10.5" fill="#7C3AED" opacity=".9"/>
+      <circle cx="22" cy="15" r="9" fill="#13141C"/>
+      <ellipse cx="16" cy="21" rx="4.8" ry="5.8" fill="#A78BFA"/>
+      <ellipse cx="13" cy="12.5" rx="1.7" ry="4.4" fill="#A78BFA" transform="rotate(-10 13 12.5)"/>
+      <ellipse cx="17" cy="12" rx="1.7" ry="4.4" fill="#A78BFA" transform="rotate(8 17 12)"/>
+    </svg>
+    <div class="logo-text">
+      <span class="logo-name">Madriguera de Datos</span>
+      <span class="logo-tag">Germán Vargas G.</span>
+    </div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#servicios">Servicios</a></li>
+    <li><a href="#valor">Metodología</a></li>
+    <li><a href="#sectores">Sectores</a></li>
+    <li><a href="#proyectos">Proyectos</a></li>
+    <li><a href="#tableros">Tableros</a></li>
+  </ul>
+  <a class="nav-btn" href="#contacto">Empecemos →</a>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="grid-bg"></div>
+  <div class="hero-orb1"></div>
+  <div class="hero-orb2"></div>
+  <div class="hero-inner">
+    <div style="animation:fadeUp .7s ease both">
+      <div class="hero-kicker">
+        <div class="kicker-dot"></div>
+        <span class="kicker-text">disponible · colombia & remoto · 2026</span>
+      </div>
+      <h1 class="hero-h1">
+        No te doy datos.<br>
+        Te doy <em>ventaja</em><br>
+        <span class="ghost">competitiva.</span>
+      </h1>
+      <p class="hero-sub">
+        Convierto la información dispersa de tu organización en <strong>insights accionables, procesos automáticos y decisiones más inteligentes</strong> — antes de que tu competencia lo haga.
+      </p>
+      <div class="hero-value-props">
+        <div class="vp">
+          <div class="vp-icon" style="background:rgba(124,58,237,.15)">🧠</div>
+          <span class="vp-text"><strong>Insights que generan ingresos</strong> — no solo reportes bonitos</span>
+        </div>
+        <div class="vp">
+          <div class="vp-icon" style="background:rgba(6,182,212,.1)">⚡</div>
+          <span class="vp-text"><strong>Automatización de procesos</strong> — liberas a tu equipo para lo que importa</span>
+        </div>
+        <div class="vp">
+          <div class="vp-icon" style="background:rgba(16,185,129,.1)">🎯</div>
+          <span class="vp-text"><strong>Decisiones en tiempo real</strong> — no una semana después del problema</span>
+        </div>
+      </div>
+      <div class="hero-ctas">
+        <a class="cta-primary" href="#contacto">Quiero transformar mi organización →</a>
+        <a class="cta-secondary" href="#servicios">Ver servicios</a>
+      </div>
+    </div>
+
+    <div class="hero-results" style="animation:fadeUp .9s ease both">
+      <div class="result-card" style="border-left:2px solid var(--p)">
+        <div class="rc-label">// impacto demostrado</div>
+        <div class="rc-value">+6M</div>
+        <div class="rc-desc">registros transformados en <span class="rc-highlight">decisiones institucionales reales</span></div>
+        <div class="impact-bar" style="margin-top:12px">
+          <div class="ib-row">
+            <span class="ib-label" style="font-size:10px;color:var(--t3)">Eficiencia</span>
+            <div class="ib-track"><div class="ib-fill" style="width:92%;background:linear-gradient(90deg,var(--p),var(--c))"></div></div>
+            <span class="ib-val" style="font-size:11px;color:var(--pb)">+92%</span>
+          </div>
+          <div class="ib-row">
+            <span class="ib-label" style="font-size:10px;color:var(--t3)">Adopción</span>
+            <div class="ib-track"><div class="ib-fill" style="width:85%;background:linear-gradient(90deg,var(--c),var(--g))"></div></div>
+            <span class="ib-val" style="font-size:11px;color:var(--c)">300+</span>
+          </div>
+          <div class="ib-row">
+            <span class="ib-label" style="font-size:10px;color:var(--t3)">Automatización</span>
+            <div class="ib-track"><div class="ib-fill" style="width:78%;background:linear-gradient(90deg,var(--g),var(--c))"></div></div>
+            <span class="ib-val" style="font-size:11px;color:var(--g)">×5</span>
+          </div>
+        </div>
+      </div>
+      <div class="rc-row">
+        <div class="rc-sm"><div class="rc-sm-label">años de experiencia</div><div class="rc-sm-val">4+</div></div>
+        <div class="rc-sm"><div class="rc-sm-label">ponencias 2025</div><div class="rc-sm-val">4</div></div>
+      </div>
+      <div class="result-card" style="border-left:2px solid var(--c)">
+        <div class="rc-label">// formación</div>
+        <div style="display:flex;flex-direction:column;gap:5px;margin-top:4px">
+          <span style="font-size:12.5px;color:var(--t2);font-weight:500">Mg. Educación · Esp. Gerencia de Proyectos</span>
+          <span style="font-size:12.5px;color:var(--t2);font-weight:500">Ing. Industrial · IBM Data Science</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="divider"></div>
+
+<!-- MANIFESTO -->
+<div class="manifesto">
+  <div class="manifesto-inner">
+    <blockquote>
+      "Los datos no son el producto.<br>
+      <em>El valor que generan, sí.</em>"
+    </blockquote>
+    <p>En la era de la información, tener datos ya no es una ventaja — todos los tienen. La ventaja real está en saber qué preguntarles, cómo interpretarlos y convertir esa lectura en acción concreta que mueve el negocio.</p>
+    <div class="manifesto-chips">
+      <span class="mchip">insights accionables</span>
+      <span class="mchip">automatización inteligente</span>
+      <span class="mchip">decisiones en tiempo real</span>
+      <span class="mchip">valor medible</span>
+      <span class="mchip">impacto estratégico</span>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICIOS -->
+<section class="sec" id="servicios">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow ey-p"><span>//</span>servicios</div>
+        <h2 class="sec-title">No resuelvo problemas de datos.<br>Resuelvo <em>problemas de negocio</em>.</h2>
+        <p class="sec-desc">Cada servicio está diseñado para generar valor medible — no solo visualizaciones.</p>
+      </div>
+    </div>
+    <div class="srv-grid">
+
+      <!-- DESTACADO -->
+      <div class="srv-card feat" style="--gradient:linear-gradient(90deg,var(--p),var(--c))">
+        <div>
+          <div class="srv-num">// 01 — FLAGSHIP</div>
+          <div class="srv-icon-wrap" style="background:var(--pd)">🧠</div>
+          <div class="srv-title">Inteligencia de negocio & dashboards estratégicos</div>
+          <div class="srv-desc">Transformo tus datos dispersos en un sistema centralizado de toma de decisiones. No un tablero más — un cockpit ejecutivo que responde tus preguntas críticas antes de que las hagas.</div>
+          <div class="srv-outcomes">
+            <span class="srv-outcome">Visibilidad total de KPIs en tiempo real</span>
+            <span class="srv-outcome">Alertas automáticas antes de que el problema escale</span>
+            <span class="srv-outcome">Reportes que se generan solos, sin intervención humana</span>
+          </div>
+        </div>
+        <div>
+          <div class="srv-tags" style="margin-bottom:1rem"><span class="srv-tag">Power BI</span><span class="srv-tag">RLS</span><span class="srv-tag">DAX avanzado</span><span class="srv-tag">Todos los sectores</span></div>
+          <div style="background:var(--pd2);border:1px solid rgba(167,139,250,.12);border-radius:12px;padding:1.25rem">
+            <div style="font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--t3);letter-spacing:.12em;margin-bottom:.75rem">// resultado típico</div>
+            <div style="font-size:13px;color:var(--t2);line-height:1.7">Organizaciones reducen hasta <span style="color:var(--g);font-weight:600">80% el tiempo</span> dedicado a preparar reportes manuales y toman decisiones <span style="color:var(--pb);font-weight:600">5x más rápido</span>.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="srv-card" style="--gradient:linear-gradient(90deg,var(--c),var(--g))">
+        <div class="srv-num">// 02</div>
+        <div class="srv-icon-wrap" style="background:var(--cd)">⚡</div>
+        <div class="srv-title">Automatización de procesos de datos</div>
+        <div class="srv-desc">Elimino el trabajo repetitivo de tu equipo. Flujos inteligentes que recolectan, limpian, transforman y distribuyen información automáticamente.</div>
+        <div class="srv-outcomes">
+          <span class="srv-outcome">Reportes automáticos por rol y área</span>
+          <span class="srv-outcome">Integración entre sistemas sin código</span>
+          <span class="srv-outcome">Tu equipo enfocado en analizar, no en copiar datos</span>
+        </div>
+        <div class="srv-tags"><span class="srv-tag">Power Automate</span><span class="srv-tag">Python</span><span class="srv-tag">SharePoint</span></div>
+      </div>
+
+      <div class="srv-card" style="--gradient:linear-gradient(90deg,var(--g),var(--c))">
+        <div class="srv-num">// 03</div>
+        <div class="srv-icon-wrap" style="background:var(--gd)">🎯</div>
+        <div class="srv-title">Diagnóstico estratégico & análisis de impacto</div>
+        <div class="srv-desc">¿Qué está funcionando y qué no? Analizo en profundidad tus procesos, programas o estrategias y entrego un mapa claro de dónde está el valor perdido.</div>
+        <div class="srv-outcomes">
+          <span class="srv-outcome">Diagnósticos basados en evidencia, no en intuición</span>
+          <span class="srv-outcome">Identificación de oportunidades de mejora</span>
+          <span class="srv-outcome">Recomendaciones concretas y priorizadas</span>
+        </div>
+        <div class="srv-tags"><span class="srv-tag">R</span><span class="srv-tag">SPSS</span><span class="srv-tag">MaxQDA</span><span class="srv-tag">Mixto</span></div>
+      </div>
+
+      <div class="srv-card" style="--gradient:linear-gradient(90deg,var(--r),var(--p))">
+        <div class="srv-num">// 04</div>
+        <div class="srv-icon-wrap" style="background:var(--rd)">🔮</div>
+        <div class="srv-title">Modelos predictivos & analítica avanzada</div>
+        <div class="srv-desc">Anticipo lo que va a pasar antes de que pase. Modelos de clasificación, segmentación y predicción que te dan ventaja sobre los eventos antes de que ocurran.</div>
+        <div class="srv-outcomes">
+          <span class="srv-outcome">Anticipa demanda, riesgo o comportamiento del cliente</span>
+          <span class="srv-outcome">Segmenta audiencias con precisión quirúrgica</span>
+          <span class="srv-outcome">Alertas tempranas para intervenir a tiempo</span>
+        </div>
+        <div class="srv-tags"><span class="srv-tag">Python</span><span class="srv-tag">Scikit-learn</span><span class="srv-tag">SHAP</span><span class="srv-tag">XGBoost</span></div>
+      </div>
+
+      <div class="srv-card" style="--gradient:linear-gradient(90deg,var(--a),var(--r))">
+        <div class="srv-num">// 05</div>
+        <div class="srv-icon-wrap" style="background:var(--ad)">📐</div>
+        <div class="srv-title">Sistemas M&E & medición de valor</div>
+        <div class="srv-desc">¿Cómo demuestras que lo que haces funciona? Diseño marcos robustos de monitoreo y evaluación que prueban el valor de tus programas e inversiones.</div>
+        <div class="srv-outcomes">
+          <span class="srv-outcome">Indicadores de impacto que convencen a stakeholders</span>
+          <span class="srv-outcome">Evidencia para conseguir financiación o justificar presupuesto</span>
+          <span class="srv-outcome">Reportes RAG que todos entienden</span>
+        </div>
+        <div class="srv-tags"><span class="srv-tag">M&E</span><span class="srv-tag">KPIs</span><span class="srv-tag">Semáforos RAG</span></div>
+      </div>
+
+      <div class="srv-card" style="--gradient:linear-gradient(90deg,var(--p),var(--r))">
+        <div class="srv-num">// 06</div>
+        <div class="srv-icon-wrap" style="background:var(--pd)">🚀</div>
+        <div class="srv-title">Capacitación & cultura de datos</div>
+        <div class="srv-desc">El mejor sistema de datos falla si tu equipo no lo adopta. Formo equipos que leen, interpretan y actúan sobre datos — transformo la cultura organizacional.</div>
+        <div class="srv-outcomes">
+          <span class="srv-outcome">Tu equipo deja de depender de un analista externo</span>
+          <span class="srv-outcome">Decisiones más rápidas en todos los niveles</span>
+          <span class="srv-outcome">Workshops prácticos, no teóricos</span>
+        </div>
+        <div class="srv-tags"><span class="srv-tag">Power BI</span><span class="srv-tag">Workshops</span><span class="srv-tag">Todos los niveles</span></div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- METODOLOGÍA / CÓMO GENERO VALOR -->
+<section class="sec" id="valor">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow ey-c"><span>//</span>metodología</div>
+        <h2 class="sec-title">De los datos al <em>valor de negocio</em></h2>
+        <p class="sec-desc">Un proceso probado que garantiza que cada proyecto genera resultados medibles, no solo entregables.</p>
+      </div>
+    </div>
+    <div class="value-grid">
+      <div class="vcard">
+        <div class="vcard-step">// paso 01</div>
+        <div class="vcard-icon">🔍</div>
+        <div class="vcard-title">Descubrir la pregunta real</div>
+        <div class="vcard-desc">Escucho tu negocio, no tus datos. Identifico las decisiones críticas que necesitas tomar y los obstáculos de información que te lo impiden hoy.</div>
+        <div class="vcard-result">entrego: mapa de oportunidades de datos</div>
+      </div>
+      <div class="vcard">
+        <div class="vcard-step">// paso 02</div>
+        <div class="vcard-icon">🏗️</div>
+        <div class="vcard-title">Diseñar la solución correcta</div>
+        <div class="vcard-desc">Defino qué datos importan, cómo conectarlos y qué indicadores responden exactamente a tu pregunta. Simple para el usuario, robusto por dentro.</div>
+        <div class="vcard-result">entrego: arquitectura de datos y prototipo</div>
+      </div>
+      <div class="vcard">
+        <div class="vcard-step">// paso 03</div>
+        <div class="vcard-icon">⚙️</div>
+        <div class="vcard-title">Construir e iterar rápido</div>
+        <div class="vcard-desc">Desarrollo ágil con feedback continuo. En semanas, no meses, tienes algo funcionando en producción que puedes usar para tomar decisiones reales.</div>
+        <div class="vcard-result">entrego: solución en producción validada</div>
+      </div>
+      <div class="vcard">
+        <div class="vcard-step">// paso 04</div>
+        <div class="vcard-icon">📈</div>
+        <div class="vcard-title">Medir el impacto generado</div>
+        <div class="vcard-desc">¿Cuánto tiempo ahorró? ¿Qué decisión mejoró? ¿Cuánto dinero o eficiencia se ganó? Medimos juntos el retorno real de la inversión en datos.</div>
+        <div class="vcard-result">entrego: reporte de ROI y siguientes pasos</div>
+      </div>
+      <div class="vcard">
+        <div class="vcard-step">// paso 05</div>
+        <div class="vcard-icon">🎓</div>
+        <div class="vcard-title">Transferir el conocimiento</div>
+        <div class="vcard-desc">Tu equipo aprende a operar y expandir la solución. No dependes de mí para siempre — eso es un éxito, no un riesgo. Dejo documentación y formación completa.</div>
+        <div class="vcard-result">entrego: equipo autónomo y documentación</div>
+      </div>
+      <div class="vcard" style="background:var(--pd2);border-color:rgba(167,139,250,.2)">
+        <div class="vcard-step">// principio</div>
+        <div class="vcard-icon">💡</div>
+        <div class="vcard-title">El dato no es el fin</div>
+        <div class="vcard-desc">Cada análisis, cada dashboard, cada modelo existe para responder una pregunta de negocio y habilitar una acción. Si no genera valor medible, no lo construyo.</div>
+        <div style="margin-top:1.5rem;display:flex;flex-wrap:wrap;gap:5px">
+          <span style="font-size:11px;color:var(--pb);background:var(--pd);border:1px solid rgba(167,139,250,.15);padding:3px 10px;border-radius:100px">valor primero</span>
+          <span style="font-size:11px;color:var(--c);background:var(--cd);border:1px solid rgba(6,182,212,.15);padding:3px 10px;border-radius:100px">resultado medible</span>
+          <span style="font-size:11px;color:var(--g);background:var(--gd);border:1px solid rgba(16,185,129,.15);padding:3px 10px;border-radius:100px">adopción real</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SECTORES -->
+<section class="sec" id="sectores">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow ey-g"><span>//</span>sectores</div>
+        <h2 class="sec-title">El problema de datos no<br>distingue <em>industria</em>.</h2>
+        <p class="sec-desc">He trabajado en contextos radicalmente distintos. La metodología es la misma — el lenguaje se adapta.</p>
+      </div>
+    </div>
+    <div class="sectors-grid">
+      <div class="sec-card" style="border-top:2px solid var(--p)"><div class="sec-emoji">🎓</div><div class="sec-name">Educación</div><div class="sec-hint">Retención estudiantil, calidad académica, acreditación y observatorios institucionales.</div></div>
+      <div class="sec-card" style="border-top:2px solid var(--r)"><div class="sec-emoji">🏥</div><div class="sec-name">Salud</div><div class="sec-hint">Eficiencia clínica, indicadores de calidad, experiencia del paciente y gestión de recursos.</div></div>
+      <div class="sec-card" style="border-top:2px solid var(--c)"><div class="sec-emoji">🏛</div><div class="sec-name">Gobierno & Público</div><div class="sec-hint">M&E de políticas, transparencia, programas sociales y presupuesto basado en evidencia.</div></div>
+      <div class="sec-card" style="border-top:2px solid var(--a)"><div class="sec-emoji">🏢</div><div class="sec-name">Empresas & PYMEs</div><div class="sec-hint">Ventas, RRHH, operaciones y finanzas — datos que convierten en ventaja competitiva real.</div></div>
+      <div class="sec-card" style="border-top:2px solid var(--g)"><div class="sec-emoji">🤝</div><div class="sec-name">ONGs & Cooperación</div><div class="sec-hint">Medición de impacto social, reportes para donantes y gestión basada en resultados.</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section class="sec" id="proyectos">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow ey-a"><span>//</span>proyectos</div>
+        <h2 class="sec-title">Trabajo comprobado,<br><em>resultados medibles</em>.</h2>
+        <p class="sec-desc">No vendo promesas. Muestro lo que construí, las decisiones que habilitó y el valor que generó.</p>
+      </div>
+    </div>
+    <div class="proj-grid">
+
+      <div class="pcard star">
+        <div>
+          <div class="pcard-stripe" style="background:linear-gradient(90deg,var(--p),var(--c))"></div>
+          <span class="ptag" style="background:var(--pd);color:var(--pb);border:1px solid rgba(167,139,250,.2)">analítica estratégica · educación superior · rol institucional</span>
+          <h3 class="pcard-title">Sistema de Inteligencia Institucional — Universidad El Bosque</h3>
+          <p class="pcard-desc">Desde mi rol como Coordinador de Evaluación en DIGINEXA, diseñé e implementé el <strong style="color:var(--t1)">Observatorio para el Éxito Estudiantil</strong>: un sistema centralizado que integra +6 millones de registros de fuentes institucionales y nacionales (SNIES, SPADIES, ICFES), transformando datos fragmentados en un ecosistema de decisión para directivos, docentes y coordinadores de los 46 programas de la universidad.</p>
+          <div class="pcard-impact">
+            <div class="pcard-impact-title">// impacto generado</div>
+            <div class="pcard-impact-items">
+              <div class="pi"><div class="pi-dot" style="background:var(--g)"></div>300+ usuarios tomando decisiones con datos en tiempo real</div>
+              <div class="pi"><div class="pi-dot" style="background:var(--pb)"></div>Procesos de caracterización que antes tomaban semanas, ahora automáticos</div>
+              <div class="pi"><div class="pi-dot" style="background:var(--c)"></div>Sistema de alertas tempranas operativo para intervención oportuna</div>
+              <div class="pi"><div class="pi-dot" style="background:var(--a)"></div>Análisis curricular y de impacto de graduados integrados al mismo sistema</div>
+            </div>
+          </div>
+          <div class="pills"><span class="pl">Power BI + RLS</span><span class="pl">Python</span><span class="pl">+6M registros</span><span class="pl">SNIES · SPADIES · ICFES</span><span class="pl">4 ponencias</span></div>
+          <a href="https://www.youtube.com/watch?v=5ucL_BCSXKE" target="_blank" style="display:inline-flex;align-items:center;gap:7px;margin-top:1.5rem;font-size:12.5px;font-weight:600;color:var(--pb);text-decoration:none;border:1px solid rgba(167,139,250,.25);background:var(--pd);padding:8px 16px;border-radius:8px;transition:all .2s" onmouseover="this.style.background='rgba(124,58,237,0.22)'" onmouseout="this.style.background='var(--pd)'">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+            Ver el Observatorio en acción →
+          </a>
+        </div>
+        <div class="pm-grid">
+          <div class="pm"><div class="pm-val">300+</div><div class="pm-label">usuarios activos</div></div>
+          <div class="pm"><div class="pm-val">+6M</div><div class="pm-label">registros integrados</div></div>
+          <div class="pm"><div class="pm-val">46</div><div class="pm-label">programas monitoreados</div></div>
+          <div class="pm"><div class="pm-val">★</div><div class="pm-label">tesis meritoria</div></div>
+        </div>
+      </div>
+
+      <div class="pcard" style="border:1px solid rgba(244,63,94,.18);position:relative;overflow:hidden">
+        <div style="position:absolute;top:16px;right:16px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:3px 12px;font-size:9px;font-weight:600;color:var(--a);font-family:'JetBrains Mono',monospace;letter-spacing:.08em">EN CONSTRUCCIÓN</div>
+        <div class="pcard-stripe" style="background:var(--r)"></div>
+        <span class="ptag" style="background:var(--rd);color:var(--r);border:1px solid rgba(244,63,94,.2)">evaluación de impacto · educación superior</span>
+        <h3 class="pcard-title">Sistema de medición de impacto institucional — Teoría del Cambio</h3>
+        <p class="pcard-desc">Diseño e implementación de un marco metodológico de análisis de impacto para una institución de educación superior, basado en la Teoría del Cambio. El sistema define metas de largo plazo, mapea condiciones inversas, estructura intervenciones estratégicas y construye indicadores SMART que conectan las acciones institucionales con transformaciones sociales medibles en comunidades y grupos de interés.</p>
+        <div class="pcard-impact">
+          <div class="pcard-impact-title">// valor generado</div>
+          <div class="pcard-impact-items">
+            <div class="pi"><div class="pi-dot" style="background:var(--g)"></div>Marco institucional de análisis de impacto replicable en IES</div>
+            <div class="pi"><div class="pi-dot" style="background:var(--c)"></div>Índices de percepción de impacto validados por panel de expertos multidisciplinar</div>
+            <div class="pi"><div class="pi-dot" style="background:var(--a)"></div>Publicación en proceso — detalles disponibles próximamente</div>
+          </div>
+        </div>
+        <div class="pills"><span class="pl">Teoría del Cambio</span><span class="pl">SPSS</span><span class="pl">R</span><span class="pl">M&E</span><span class="pl">Acreditación</span><span class="pl">IES</span></div>
+      </div>
+
+      <div class="pcard">
+        <div class="pcard-stripe" style="background:var(--c)"></div>
+        <span class="ptag" style="background:var(--cd);color:var(--c);border:1px solid rgba(6,182,212,.2)">investigación aplicada · sector público</span>
+        <h3 class="pcard-title">Calidad educativa ODS 4 en comunidades rurales</h3>
+        <p class="pcard-desc">Diagnóstico profundo de condiciones educativas en tres comunidades rurales colombianas (Tota, Supatá y Viotá) bajo el marco ODS 4. Metodología mixta — hermenéutica cualitativa con cartografía social y grupos focales — que identificó brechas estructurales y generó un conjunto de estrategias replicables de política pública basadas en evidencia real de campo. Publicado y reconocido con mención meritoria.</p>
+        <div class="pcard-impact">
+          <div class="pcard-impact-title">// valor generado</div>
+          <div class="pcard-impact-items">
+            <div class="pi"><div class="pi-dot" style="background:var(--g)"></div>Estrategias de política pública basadas en evidencia de campo</div>
+            <div class="pi"><div class="pi-dot" style="background:var(--pb)"></div>Presentado en congreso internacional — modelo replicable en ruralidad</div>
+            <div class="pi"><div class="pi-dot" style="background:var(--c)"></div>Artículo publicado en repositorio institucional — acceso abierto</div>
+          </div>
+        </div>
+        <div class="pills"><span class="pl">MaxQDA</span><span class="pl">Atlas.ti</span><span class="pl">Análisis mixto</span><span class="pl">ODS 4</span><span class="pl">Mención meritoria</span></div>
+        <a href="https://repositorio.unbosque.edu.co/items/db5dce5a-c62e-4b56-bc80-8df5cc55ad7e" target="_blank" style="display:inline-flex;align-items:center;gap:7px;margin-top:1.25rem;font-size:12.5px;font-weight:600;color:var(--c);text-decoration:none;border:1px solid rgba(6,182,212,.25);background:var(--cd);padding:8px 16px;border-radius:8px;transition:all .2s" onmouseover="this.style.background='rgba(6,182,212,0.18)'" onmouseout="this.style.background='var(--cd)'">
+          <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+          Leer artículo publicado →
+        </a>
+      </div>
+
+      <!-- VIDEO: Webinar El Poder del Dato -->
+      <div class="pcard">
+        <div class="pcard-stripe" style="background:linear-gradient(90deg,var(--g),var(--c))"></div>
+        <span class="ptag" style="background:var(--gd);color:var(--g);border:1px solid rgba(16,185,129,.2)">ponencia · cultura de datos · webinar</span>
+        <h3 class="pcard-title">Ponencia: El Poder del Dato en la Toma de Decisiones</h3>
+        <p class="pcard-desc">Webinar donde exploro cómo las organizaciones pueden transformar datos en ventaja estratégica real. Casos concretos de implementación, errores comunes al adoptar analítica y un marco práctico para construir cultura de datos desde cero — sin depender del tamaño del presupuesto.</p>
+        <div class="pcard-impact">
+          <div class="pcard-impact-title">// temas abordados</div>
+          <div class="pcard-impact-items">
+            <div class="pi"><div class="pi-dot" style="background:var(--g)"></div>De datos a decisiones: el recorrido que falla en el 80% de los proyectos</div>
+            <div class="pi"><div class="pi-dot" style="background:var(--c)"></div>Cómo construir indicadores que muevan comportamiento organizacional</div>
+            <div class="pi"><div class="pi-dot" style="background:var(--pb)"></div>Casos reales — educación, salud y sector empresarial</div>
+          </div>
+        </div>
+        <div class="pills"><span class="pl">Cultura de datos</span><span class="pl">KPIs</span><span class="pl">Analítica estratégica</span><span class="pl">Ponencia</span></div>
+        <a href="https://www.youtube.com/watch?v=gQFvqWjHxbA" target="_blank" style="display:inline-flex;align-items:center;gap:7px;margin-top:1.25rem;font-size:12.5px;font-weight:600;color:var(--g);text-decoration:none;border:1px solid rgba(16,185,129,.25);background:var(--gd);padding:8px 16px;border-radius:8px;transition:all .2s" onmouseover="this.style.background='rgba(16,185,129,0.18)'" onmouseout="this.style.background='var(--gd)'">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor"><path d="M10 16.5l6-4.5-6-4.5v9zM12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/></svg>
+          Ver ponencia en YouTube →
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TABLEROS BI -->
+<section class="sec" id="tableros">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow ey-p"><span>//</span>demos · power bi</div>
+        <h2 class="sec-title">Tableros que <em>generan valor</em>,<br>no solo visualizaciones.</h2>
+        <p class="sec-desc">5 casos de uso reales. Cada uno con 4 datasets interconectados, listos para importar con modelo estrella en Power BI.</p>
+      </div>
+    </div>
+    <div class="tab-grid">
+
+      <div class="tcard" style="border-top:2px solid var(--p)">
+        <div class="tcard-visual" style="background:linear-gradient(135deg,#1a0a3d,#3b1fa8,#0f172a);position:relative"><span style="position:relative;z-index:1">🎓</span><div style="position:absolute;top:10px;right:10px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:600;color:#10B981;font-family:JetBrains Mono,monospace;z-index:2">✓ LIVE</div></div>
+        <div class="tcard-body">
+          <span class="tcard-cat" style="background:var(--pd);color:var(--pb);border:1px solid rgba(167,139,250,.2)">Educación · Retención</span>
+          <div class="tcard-title">Inteligencia de Permanencia Estudiantil</div>
+          <p class="tcard-desc">Visibilidad completa de trayectorias estudiantiles, riesgo de abandono, efecto de intervenciones y evolución histórica por cohorte y programa.</p>
+          <div class="tcard-datasets">
+            <div class="ds-label">// 4 tablas · 3 páginas · semáforo RAG</div>
+            <div class="ds-chips"><span class="ds-chip">estudiantes</span><span class="ds-chip">programas</span><span class="ds-chip">intervenciones</span><span class="ds-chip">cohortes</span></div>
+          </div>
+          <a class="tcard-btn" href="https://app.powerbi.com/view?r=eyJrIjoiMjVkMDRlOWUtNzUzYy00NDUxLWFjZjktNmFhZWY5YzY0OGVhIiwidCI6Ijc0YzBjMjUwLTFjNzctNDA1ZC05YjFlLTlhYzFmNTA4YWJlMyIsImMiOjR9" target="_blank">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Explorar tablero en vivo</span>
+            <span class="btn-arrow">→</span>
+          </a>
+        </div>
+        <div class="tcard-foot"><span class="tcard-kpi">impacto de intervenciones en retención</span><span class="tcard-rows">~6.2K filas</span></div>
+      </div>
+
+      <div class="tcard" style="opacity:.85">
+        <div class="tcard-visual" style="background:linear-gradient(135deg,#032c1e,#064e3b,#0a0f1e);position:relative"><span style="position:relative;z-index:1">🗂️</span><div style="position:absolute;top:10px;right:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:600;color:var(--a);font-family:JetBrains Mono,monospace;z-index:2">EN CONSTRUCCIÓN</div></div>
+        <div class="tcard-body">
+          <span class="tcard-cat" style="background:var(--gd);color:var(--g);border:1px solid rgba(16,185,129,.2)">M&E · Gobierno · ONGs</span>
+          <div class="tcard-title">Dashboard de Resultados Institucionales</div>
+          <p class="tcard-desc" style="color:var(--t3)">Próximamente disponible. Actualmente en desarrollo con datasets reales y modelo de datos listo.</p>
+          <div class="tcard-datasets">
+            <div class="ds-label">// 4 tablas</div>
+            <div class="ds-chips"><span class="ds-chip">indicadores</span><span class="ds-chip">planes</span><span class="ds-chip">saber_pro</span><span class="ds-chip">acreditaciones</span></div>
+          </div>
+          <div class="tcard-wip">
+            <div class="wip-dot"></div>
+            <span class="wip-text">En construcción · Disponible pronto</span>
+            <span class="wip-eta">2025</span>
+          </div>
+        </div>
+        <div class="tcard-foot"><span class="tcard-kpi">cumplimiento de metas por área</span><span class="tcard-rows" style="color:var(--a)">~1.3K filas</span></div>
+      </div>
+
+      <div class="tcard" style="opacity:.85">
+        <div class="tcard-visual" style="background:linear-gradient(135deg,#3d2500,#92400e,#1c0f00);position:relative"><span style="position:relative;z-index:1">💼</span><div style="position:absolute;top:10px;right:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:600;color:var(--a);font-family:JetBrains Mono,monospace;z-index:2">EN CONSTRUCCIÓN</div></div>
+        <div class="tcard-body">
+          <span class="tcard-cat" style="background:var(--ad);color:var(--a);border:1px solid rgba(245,158,11,.2)">Comercial · Ventas</span>
+          <div class="tcard-title">Inteligencia Comercial & Pipeline B2B</div>
+          <p class="tcard-desc" style="color:var(--t3)">Próximamente disponible. Actualmente en desarrollo con datasets reales y modelo de datos listo.</p>
+          <div class="tcard-datasets">
+            <div class="ds-label">// 4 tablas</div>
+            <div class="ds-chips"><span class="ds-chip">oportunidades</span><span class="ds-chip">actividades</span><span class="ds-chip">clientes</span><span class="ds-chip">metas</span></div>
+          </div>
+          <div class="tcard-wip">
+            <div class="wip-dot"></div>
+            <span class="wip-text">En construcción · Disponible pronto</span>
+            <span class="wip-eta">2025</span>
+          </div>
+        </div>
+        <div class="tcard-foot"><span class="tcard-kpi">forecast vs real por vendedor</span><span class="tcard-rows" style="color:var(--a)">~3.6K filas</span></div>
+      </div>
+
+      <div class="tcard" style="opacity:.85">
+        <div class="tcard-visual" style="background:linear-gradient(135deg,#3d0a0a,#7f1d1d,#0f0808);position:relative"><span style="position:relative;z-index:1">👥</span><div style="position:absolute;top:10px;right:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:600;color:var(--a);font-family:JetBrains Mono,monospace;z-index:2">EN CONSTRUCCIÓN</div></div>
+        <div class="tcard-body">
+          <span class="tcard-cat" style="background:var(--rd);color:var(--r);border:1px solid rgba(244,63,94,.2)">RRHH · People Analytics</span>
+          <div class="tcard-title">People Intelligence & Talento</div>
+          <p class="tcard-desc" style="color:var(--t3)">Próximamente disponible. Actualmente en desarrollo con datasets reales y modelo de datos listo.</p>
+          <div class="tcard-datasets">
+            <div class="ds-label">// 4 tablas</div>
+            <div class="ds-chips"><span class="ds-chip">empleados</span><span class="ds-chip">evaluaciones</span><span class="ds-chip">capacitaciones</span><span class="ds-chip">ausentismo</span></div>
+          </div>
+          <div class="tcard-wip">
+            <div class="wip-dot"></div>
+            <span class="wip-text">En construcción · Disponible pronto</span>
+            <span class="wip-eta">2025</span>
+          </div>
+        </div>
+        <div class="tcard-foot"><span class="tcard-kpi">ROI de capacitaciones</span><span class="tcard-rows" style="color:var(--a)">~3.2K filas</span></div>
+      </div>
+
+      <div class="tcard" style="opacity:.85">
+        <div class="tcard-visual" style="background:linear-gradient(135deg,#0a1f3d,#1e3a5f,#060e1e);position:relative"><span style="position:relative;z-index:1">🏥</span><div style="position:absolute;top:10px;right:10px;background:rgba(245,158,11,.12);border:1px solid rgba(245,158,11,.3);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:600;color:var(--a);font-family:JetBrains Mono,monospace;z-index:2">EN CONSTRUCCIÓN</div></div>
+        <div class="tcard-body">
+          <span class="tcard-cat" style="background:var(--cd);color:var(--c);border:1px solid rgba(6,182,212,.2)">Salud · Calidad Clínica</span>
+          <div class="tcard-title">Calidad & Eficiencia en Salud</div>
+          <p class="tcard-desc" style="color:var(--t3)">Próximamente disponible. Actualmente en desarrollo con datasets reales y modelo de datos listo.</p>
+          <div class="tcard-datasets">
+            <div class="ds-label">// 4 tablas</div>
+            <div class="ds-chips"><span class="ds-chip">atenciones</span><span class="ds-chip">personal</span><span class="ds-chip">insumos</span><span class="ds-chip">calidad</span></div>
+          </div>
+          <div class="tcard-wip">
+            <div class="wip-dot"></div>
+            <span class="wip-text">En construcción · Disponible pronto</span>
+            <span class="wip-eta">2025</span>
+          </div>
+        </div>
+        <div class="tcard-foot"><span class="tcard-kpi">satisfacción vs tiempo espera</span><span class="tcard-rows" style="color:var(--a)">~3.1K filas</span></div>
+      </div>
+
+      <div class="tcard" style="border-top:2px solid var(--p)">
+        <div class="tcard-visual" style="background:linear-gradient(135deg,#1a0a3d,#2d1b6b,#0f0a1e);position:relative"><span style="position:relative;z-index:1">👥</span><div style="position:absolute;top:10px;right:10px;background:rgba(16,185,129,.15);border:1px solid rgba(16,185,129,.4);border-radius:20px;padding:3px 10px;font-size:9px;font-weight:600;color:#10B981;font-family:JetBrains Mono,monospace;z-index:2">✓ LIVE</div></div>
+        <div class="tcard-body">
+          <span class="tcard-cat" style="background:var(--pd);color:var(--pb);border:1px solid rgba(167,139,250,.2)">RRHH · IA Predictiva · Python</span>
+          <div class="tcard-title">People Analytics & Predicción de Rotación</div>
+          <p class="tcard-desc">Modelo predictivo de burnout y rotación con Python integrado en Power BI. Score de vuelo, cuadrante de talento, análisis 360° y lista de acción inmediata.</p>
+          <div class="tcard-datasets">
+            <div class="ds-label">// 5 tablas · 2 páginas · scripts Python</div>
+            <div class="ds-chips"><span class="ds-chip">empleados</span><span class="ds-chip">clima</span><span class="ds-chip">eval360</span><span class="ds-chip">capacitaciones</span><span class="ds-chip">salidas</span></div>
+          </div>
+          <a class="tcard-btn" href="https://app.powerbi.com/view?r=eyJrIjoiYTAwODdkMDUtNjM5My00ODc3LWI5OTktMjQyZmRkMWQ0ZGU3IiwidCI6Ijc0YzBjMjUwLTFjNzctNDA1ZC05YjFlLTlhYzFmNTA4YWJlMyIsImMiOjR9" target="_blank">
+            <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            <span>Explorar tablero en vivo</span>
+            <span class="btn-arrow">→</span>
+          </a>
+        </div>
+        <div class="tcard-foot"><span class="tcard-kpi">Score burnout & vuelo · lista acción inmediata</span><span class="tcard-rows">~3.4K filas</span></div>
+      </div>
+      <div class="tcard-plus">
+        <div style="font-size:2rem;margin-bottom:.75rem;opacity:.2">◈</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-weight:600;font-size:.85rem;color:var(--t3)">Tu industria aquí</div>
+        <div style="font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--t3);margin-top:8px;text-align:center;opacity:.5;line-height:1.6">¿Retail? ¿Fintech?<br>¿Manufactura?<br>Lo construimos juntos.</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- TOOLKIT -->
+<section class="sec" id="toolkit">
+  <div class="sec-inner">
+    <div class="sec-head">
+      <div>
+        <div class="eyebrow ey-c"><span>//</span>stack técnico</div>
+        <h2 class="sec-title">Las herramientas al<br>servicio del <em>resultado</em>.</h2>
+        <p class="sec-desc">No me caso con ninguna tecnología. Uso la que mejor resuelve tu problema específico.</p>
+      </div>
+    </div>
+    <div class="tk-grid">
+      <div class="tkcard"><div class="tk-ico">📊</div><div class="tk-name">Power BI</div><div class="tk-cat">Visualización & BI</div><div class="tk-bar"><div class="tk-fill" style="width:100%"></div></div></div>
+      <div class="tkcard"><div class="tk-ico">🐍</div><div class="tk-name">Python</div><div class="tk-cat">Datos & Automatización</div><div class="tk-bar"><div class="tk-fill" style="width:82%"></div></div></div>
+      <div class="tkcard"><div class="tk-ico">📈</div><div class="tk-name">R / SPSS</div><div class="tk-cat">Análisis estadístico</div><div class="tk-bar"><div class="tk-fill" style="width:80%"></div></div></div>
+      <div class="tkcard"><div class="tk-ico">🔍</div><div class="tk-name">MaxQDA · Atlas.ti</div><div class="tk-cat">Análisis cualitativo</div><div class="tk-bar"><div class="tk-fill" style="width:78%"></div></div></div>
+      <div class="tkcard"><div class="tk-ico">⚙️</div><div class="tk-name">Power Automate</div><div class="tk-cat">Automatización de flujos</div><div class="tk-bar"><div class="tk-fill" style="width:68%"></div></div></div>
+      <div class="tkcard"><div class="tk-ico">🗂️</div><div class="tk-name">Bizagi · Visio</div><div class="tk-cat">Modelado de procesos</div><div class="tk-bar"><div class="tk-fill" style="width:65%"></div></div></div>
+      <div class="tkcard"><div class="tk-ico">📋</div><div class="tk-name">Scrum · Kanban</div><div class="tk-cat">Entrega ágil</div><div class="tk-bar"><div class="tk-fill" style="width:78%"></div></div></div>
+      <div class="tkcard"><div class="tk-ico">📝</div><div class="tk-name">Excel avanzado</div><div class="tk-cat">Análisis rápido</div><div class="tk-bar"><div class="tk-fill" style="width:100%"></div></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section id="contacto">
+  <div class="cta-orb"></div>
+  <div class="cta-inner">
+    <div class="eyebrow ey-p" style="justify-content:center;margin-bottom:1rem"><span>//</span>hablemos</div>
+    <div style="display:flex;justify-content:center;margin-bottom:1.5rem">
+      <svg width="56" height="56" viewBox="0 0 36 36" fill="none">
+        <circle cx="18" cy="18" r="17" fill="#13141C" stroke="rgba(167,139,250,0.45)" stroke-width="1.5"/>
+        <circle cx="18" cy="18" r="10.5" fill="#7C3AED" opacity=".9"/>
+        <circle cx="22" cy="15" r="9" fill="#13141C"/>
+        <ellipse cx="16" cy="21" rx="4.8" ry="5.8" fill="#A78BFA"/>
+        <ellipse cx="13" cy="12.5" rx="1.7" ry="4.4" fill="#A78BFA" transform="rotate(-10 13 12.5)"/>
+        <ellipse cx="17" cy="12" rx="1.7" ry="4.4" fill="#A78BFA" transform="rotate(8 17 12)"/>
+      </svg>
+    </div>
+    <h2 class="cta-title">¿Tu organización merece<br>tomar decisiones con <em>claridad</em>?</h2>
+    <p class="cta-sub">Cuéntame el problema. No el técnico — el de negocio. En 24 horas te digo si puedo ayudarte y cómo.</p>
+    <div class="cta-links">
+      <a href="/cdn-cgi/l/email-protection#14736275667375677326212526547379757d783a777b79" class="cl prime">✉ Cuéntame tu reto</a>
+      <a href="https://www.linkedin.com/in/gvg2512/" class="cl" target="_blank">in LinkedIn</a>
+      <a href="tel:+573003637173" class="cl">📞 (+57) 300 363 7173</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-brand">
+    <svg width="24" height="24" viewBox="0 0 36 36" fill="none"><circle cx="18" cy="18" r="17" fill="#13141C" stroke="rgba(167,139,250,0.25)" stroke-width="1"/><circle cx="18" cy="18" r="10.5" fill="#7C3AED" opacity=".7"/><circle cx="22" cy="15" r="9" fill="#13141C"/><ellipse cx="16" cy="21" rx="4.8" ry="5.8" fill="#A78BFA"/><ellipse cx="13" cy="12.5" rx="1.7" ry="4.4" fill="#A78BFA" transform="rotate(-10 13 12.5)"/><ellipse cx="17" cy="12" rx="1.7" ry="4.4" fill="#A78BFA" transform="rotate(8 17 12)"/></svg>
+    <span style="font-family:'Outfit',sans-serif;font-weight:700;font-size:13px;color:rgba(167,139,250,.5)">Madriguera de Datos</span>
+  </div>
+  <p>© 2026 Germán Arturo Vargas G. · Consultor de Datos & Analytics · Bogotá, Colombia</p>
+  <p>// disponible · remoto
